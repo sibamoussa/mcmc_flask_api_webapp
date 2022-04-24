@@ -11,7 +11,7 @@ Implementation of Monte Carlo Metropolis Hastings (MCMC) Algorithm as a User-Aut
 7) Now you will be able to access the web-app. To visualize the results of the MCMC algorithm on the double well potential, refer to terminal where you will be prompted to enter the number of iterations, the temperature in degrees celcuis and the constant for the barrier height. Enter these values with a space in between and press enter
 8) Viola! Refer back the web browser and you should be able to visualize the results from the MCMC algorithm on the double well potential. 
 
-Notes:
+## Notes:
 - You can run the simulation as many times as you want. You will notice that the MCMC algorithm gets stuck in the low energy modes and does not sample the space very well at low temperatures - which is an inherent problem in MCMC based sampling algorithms. 
 - Sample images of authentication and MCMC simulation are in /img folder.
 
