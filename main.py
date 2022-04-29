@@ -5,6 +5,9 @@ from matplotlib.figure import Figure
 import base64
 from io import BytesIO
 import math
+from waitress import serve
+
+
 app=Flask('mcmc')
 
 
@@ -77,5 +80,6 @@ def main():
     except ValueError:
         return 'Error in user input, please make sure to use integer values as valid input'
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 #     app.run(host="127.0.0.1", port=8080, debug=True)
+    serve(app, listen='*:80')
