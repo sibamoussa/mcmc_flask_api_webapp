@@ -1,4 +1,5 @@
-from flask import Flask
+from tarfile import RECORDSIZE
+from flask import Flask, jsonify
 from flask_basicauth import BasicAuth
 import numpy as np
 from matplotlib.figure import Figure
@@ -6,6 +7,7 @@ import base64
 from io import BytesIO
 import math
 from waitress import serve
+import requests 
 
 
 app=Flask('mcmc')
@@ -17,8 +19,6 @@ app.config['BASIC_AUTH_PASSWORD']='MCMC'
 basic_auth=BasicAuth(app)
 
 
-
-
 def target(theta):
     return (-0.5*theta**2+0.25*theta**4)   # double well potential
 
@@ -26,13 +26,20 @@ def prob_density(theta,beta):
     return np.exp(-beta*target(theta))    #partition function 
 # prob proportional to e^(-energy(i)/kt) beta=1/kt
 
+
 @app.route("/")  #decorator to connect 
 
 @basic_auth.required
 def main():
     try:
-        n_iter,deg_c,const = [int(i) for i in input("Please enter number of iterations, temperature and beta ratio(beta*barrier height) :").split()]
-
+        filtered_val=2
+        val_type="n_iter"
+        req=requests.get(url=(f"http://127.0.0.1:5001/api/{val_type}/{filtered_val}"))
+        data=(req.json()[0])
+        
+        # Option to include user input
+        # n_iter,deg_c,const = [int(i) for i in input("Please enter number of iterations, temperature and beta ratio(beta*barrier height) :").split()]
+        n_iter,deg_c,const= [data['n_iter'],data['deg_c'],data['const']]
         n_iterations = n_iter
         deg_C=deg_c
         constant=const
@@ -75,8 +82,7 @@ def main():
         fig.savefig(buf, format="png")
         # Embed the result in the html output.
         data = base64.b64encode(buf.getbuffer()).decode("ascii")
-        return f"<img src='data:image/png;base64,{data}'/>"    
-    
+        return f"<img src='data:image/png;base64,{data}'/>"
     except ValueError:
         return 'Error in user input, please make sure to use integer values as valid input'
 
